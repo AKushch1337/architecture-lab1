@@ -1,2 +1,3 @@
 # architecture-golab1
-asd
+
+Done by: Artem Kushch IM-13
