@@ -8,6 +8,14 @@ import (
 	"time"
 )
 
+func main() {
+	http.HandleFunc("/time", getTime)
+
+	if err := http.ListenAndServe(":8795", nil); err != nil {
+		log.Fatal(err)
+	}
+}
+
 func getTime(w http.ResponseWriter, req *http.Request) {
 	currentTime := time.Now()
 	timeWithTimestamp := currentTime.Format(time.RFC3339)
