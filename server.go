@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -23,18 +22,21 @@ func main() {
 }
 
 func getTime(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Sorry, only GET request is supported.", http.StatusMethodNotAllowed)
+		return
+	}
+
 	currentTime := time.Now()
 	timeWithTimestamp := currentTime.Format(time.RFC3339)
 	data := map[string]string{
 		"time": timeWithTimestamp,
 	}
-	b, err := json.MarshalIndent(data, "", " ")
-	if err != nil {
-		log.Fatal(err)
+
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-	if req.Method == "GET" {
-		fmt.Fprintf(w, string(b))
-	} else {
-		fmt.Fprintf(w, "Sorry, only GET request is supported.")
-	}
+
+	log.Printf("Request handled successfully: method=%s, path=%s, remote_addr=%s", req.Method, req.URL.Path, req.RemoteAddr)
 }
