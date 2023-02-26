@@ -8,11 +8,17 @@ import (
 	"time"
 )
 
-func main() {
-	http.HandleFunc("/time", getTime)
+const (
+	port    = ":8795"
+	apiPath = "/time"
+)
 
-	if err := http.ListenAndServe(":8795", nil); err != nil {
-		log.Fatal(err)
+func main() {
+	http.HandleFunc(apiPath, getTime)
+
+	log.Printf("Starting server on port %s", port)
+	if err := http.ListenAndServe(port, nil); err != nil {
+		log.Fatalf("Failed to start server: %s", err)
 	}
 }
 
